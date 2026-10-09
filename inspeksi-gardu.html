@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Inspeksi Gardu</title>
+<style>
+:root{color-scheme:light;--bg:#eef3f8;--halo:rgba(14,165,233,.14);--card:rgba(255,255,255,.94);--card2:#f1f6fb;--dlg:#fff;--tx:#0f172a;--mut:#475569;--bd:rgba(2,132,199,.28);--bd2:rgba(2,132,199,.55);--pri:#0284c7;--pri2:#2563eb;--prifg:#fff;--acc:#0369a1;--secbg:linear-gradient(135deg,rgba(14,165,233,.07),rgba(59,130,246,.13));--ok:#059669;--okfg:#fff;--okt:#047857;--bad:#c2410c;--badfg:#fff;--badt:#9a3412;--red:#dc2626;--redfg:#fff;--inp:#fff;--inpbd:#b6c4d6;--ring:rgba(2,132,199,.22);--glow:none;--shadow:0 8px 20px -10px rgba(15,23,42,.28);--grid:rgba(100,116,139,.10);--hdr:rgba(255,255,255,.9);--warnbg:#fff4e5;--warnfg:#7a4300;--warnbd:#f0c27b}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){color-scheme:dark;--bg:#030712;--halo:rgba(0,242,254,.16);--card:rgba(17,24,39,.84);--card2:#0b1220;--dlg:#0b1220;--tx:#f1f5f9;--mut:#a3b0c2;--bd:rgba(0,242,254,.2);--bd2:rgba(0,242,254,.45);--pri:#22d3ee;--pri2:#3b82f6;--prifg:#031018;--acc:#22d3ee;--secbg:linear-gradient(135deg,rgba(0,242,254,.08),rgba(79,172,254,.16));--ok:#10b981;--okfg:#03140d;--okt:#34d399;--bad:#fb923c;--badfg:#1a0a00;--badt:#fdba74;--red:#f87171;--redfg:#1f0505;--inp:rgba(3,7,18,.88);--inpbd:rgba(100,116,139,.6);--ring:rgba(34,211,238,.28);--glow:0 0 10px rgba(0,242,254,.5),0 0 22px rgba(0,242,254,.25);--shadow:0 0 22px rgba(0,0,0,.5),inset 0 0 14px rgba(0,242,254,.04);--grid:rgba(100,116,139,.14);--hdr:rgba(8,12,22,.86);--warnbg:rgba(245,158,11,.12);--warnfg:#fcd34d;--warnbd:rgba(245,158,11,.4)}}
+:root[data-theme=dark]{color-scheme:dark;--bg:#030712;--halo:rgba(0,242,254,.16);--card:rgba(17,24,39,.84);--card2:#0b1220;--dlg:#0b1220;--tx:#f1f5f9;--mut:#a3b0c2;--bd:rgba(0,242,254,.2);--bd2:rgba(0,242,254,.45);--pri:#22d3ee;--pri2:#3b82f6;--prifg:#031018;--acc:#22d3ee;--secbg:linear-gradient(135deg,rgba(0,242,254,.08),rgba(79,172,254,.16));--ok:#10b981;--okfg:#03140d;--okt:#34d399;--bad:#fb923c;--badfg:#1a0a00;--badt:#fdba74;--red:#f87171;--redfg:#1f0505;--inp:rgba(3,7,18,.88);--inpbd:rgba(100,116,139,.6);--ring:rgba(34,211,238,.28);--glow:0 0 10px rgba(0,242,254,.5),0 0 22px rgba(0,242,254,.25);--shadow:0 0 22px rgba(0,0,0,.5),inset 0 0 14px rgba(0,242,254,.04);--grid:rgba(100,116,139,.14);--hdr:rgba(8,12,22,.86);--warnbg:rgba(245,158,11,.12);--warnfg:#fcd34d;--warnbd:rgba(245,158,11,.4)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.4 system-ui,Segoe UI,Roboto,sans-serif;padding-bottom:90px}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:radial-gradient(circle at 50% 0%,var(--halo),transparent 46%),linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:100% 100%,40px 40px,40px 40px}
+#app{position:relative;z-index:1}
+header.top{position:sticky;top:0;z-index:5;background:var(--hdr);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid var(--bd);color:var(--tx);padding:10px 14px;display:flex;align-items:center;gap:10px}
+header.top h1{font-size:16px;margin:0;flex:1;letter-spacing:.12em;text-transform:uppercase;color:var(--acc);text-shadow:var(--glow);font-weight:800}
+header.top button{background:transparent;color:var(--acc);border:1px solid var(--bd);border-radius:10px;padding:7px 11px;min-height:38px}
+header.top .ibtn{padding:0;width:38px;display:grid;place-items:center}
+.logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#06b6d4,#2563eb);display:grid;place-items:center;color:#fff;box-shadow:0 4px 14px rgba(6,182,212,.4);flex:none}
+main{padding:12px;max-width:760px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:var(--shadow)}
+h2{font:700 12px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);margin:18px 0 8px}
+h2::before{content:'';display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--acc);margin-right:8px;box-shadow:var(--glow)}
+.sech{display:flex;align-items:center;justify-content:space-between;gap:8px}
+label.f{display:block;font:600 11.5px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.05em;text-transform:uppercase;color:var(--acc);margin:10px 0 4px}
+input[type=text],input[type=number],input[type=date],input[type=time],select,textarea{width:100%;padding:11px 12px;min-height:44px;border:1px solid var(--inpbd);border-radius:12px;background:var(--inp);color:var(--tx);font:inherit}
+input[type=text]:focus,input[type=number]:focus,input[type=date]:focus,input[type=time]:focus,select:focus,textarea:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 3px var(--ring)}
+textarea{min-height:72px}
+button{font:inherit}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,var(--pri),var(--pri2));color:var(--prifg);border:0;border-radius:12px;padding:11px 16px;min-height:44px;font-weight:700;box-shadow:0 4px 14px -5px rgba(6,182,212,.55);transition:transform .12s,box-shadow .2s}
+.btn svg{flex:none}
+.btn:active{transform:scale(.98)}
+.btn.sec{background:var(--secbg);color:var(--acc);border:1px solid var(--bd2);box-shadow:none}
+.btn.red{background:var(--red);color:var(--redfg);box-shadow:none}
+.btn.sm{padding:7px 11px;min-height:36px;font-size:13px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.row>*{flex:1}
+.badge{display:inline-flex;align-items:center;gap:5px;font:600 11px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;padding:3px 10px;border-radius:99px;background:var(--card2);border:1px solid var(--bd);color:var(--acc)}
+.badge.ok{background:rgba(16,185,129,.14);border-color:rgba(16,185,129,.5);color:var(--okt)}
+.badge.draft{background:rgba(251,146,60,.14);border-color:rgba(251,146,60,.55);color:var(--badt)}
+.mut{color:var(--mut);font-size:13px}
+.item{border-top:1px solid var(--bd);padding:12px 0}
+.item:first-of-type{border-top:0}
+.item .t{font-weight:600;margin-bottom:6px}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chips input{position:absolute;opacity:0;pointer-events:none}
+.chip{padding:9px 14px;min-height:40px;display:inline-flex;align-items:center;border:1px solid var(--inpbd);border-radius:99px;background:var(--inp);font-size:14px}
+input:focus-visible+.chip{box-shadow:0 0 0 3px var(--ring)}
+input:checked+.chip.good{background:var(--ok);border-color:var(--ok);color:var(--okfg);font-weight:600}
+input:checked+.chip.bad{background:var(--bad);border-color:var(--bad);color:var(--badfg);font-weight:600}
+.detail{margin-top:8px;display:none;gap:6px;flex-wrap:wrap}
+.detail.on{display:flex}
+.detail input[type=text]{flex:1 1 150px}
+.thumbs{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;width:100%}
+.thumbs .th{position:relative}
+.thumbs img{width:68px;height:68px;object-fit:cover;border-radius:10px;border:1px solid var(--bd2)}
+.thumbs .x{position:absolute;top:-6px;right:-6px;background:var(--red);color:var(--redfg);border:0;border-radius:99px;width:22px;height:22px;line-height:20px;padding:0}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--hdr);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--bd);padding:10px 12px calc(10px + env(safe-area-inset-bottom));display:flex;gap:8px;z-index:6}
+.bar .btn{flex:1}
+fieldset{border:0;padding:0;margin:0;min-width:0}
+.jr{border:1px solid var(--bd);border-radius:12px;padding:10px;margin-bottom:8px;background:var(--card2)}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.grid>div>label,.grid3>div>label{display:block;font-size:11px;color:var(--mut)}
+.res{font-variant-numeric:tabular-nums}
+.res b{font-size:20px;color:var(--acc)}
+dialog{border:1px solid var(--bd2);border-radius:16px;background:var(--dlg);color:var(--tx);width:min(92vw,420px);box-shadow:0 20px 50px rgba(0,0,0,.45)}
+dialog::backdrop{background:rgba(0,0,0,.62);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.warn{background:var(--warnbg);color:var(--warnfg);border:1px solid var(--warnbd);padding:9px;border-radius:10px;font-size:13px}
+.gname{font-weight:700;font-size:16px}
+.gmeta{font:12px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--mut);margin-top:2px}
+.fil{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.fil input[type=text]{grid-column:1/-1}
+</style>
+<script>try{var __t=localStorage.getItem("ig_tema");if(__t)document.documentElement.setAttribute("data-theme",__t)}catch(e){}</script>
+</head>
+<body>
+<div id="app"></div>
+<input type="file" id="fcsv" accept=".csv,.txt,.xlsx,text/csv" hidden>
+<input type="file" id="fcam" accept="image/*" capture="environment" hidden>
+<script>
+'use strict';
+/* ================= util ================= */
+function h(tag,attrs,...kids){const e=document.createElement(tag);for(const k in(attrs||{})){const v=attrs[k];if(k==='class')e.className=v;else if(k.startsWith('on'))e.addEventListener(k.slice(2),v);else if(v!==false&&v!=null)e.setAttribute(k,v===true?'':v);}for(const c of kids.flat(2)){if(c==null||c===false)continue;e.append(c.nodeType?c:document.createTextNode(c));}return e;}
+const ICON={bolt:'<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',moon:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',trash:'<path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/>',clip:'<rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/>',gauge:'<path d="M12 14l4-4"/><path d="M3.3 17a10 10 0 1 1 17.4 0"/>',inbox:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>',plus:'<path d="M12 5v14M5 12h14"/>',send:'<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>',refresh:'<path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/>'};
+function ico(n,sz){const s=document.createElementNS('http://www.w3.org/2000/svg','svg');s.setAttribute('viewBox','0 0 24 24');s.setAttribute('width',sz||16);s.setAttribute('height',sz||16);s.setAttribute('fill','none');s.setAttribute('stroke','currentColor');s.setAttribute('stroke-width','2');s.setAttribute('stroke-linecap','round');s.setAttribute('stroke-linejoin','round');s.setAttribute('aria-hidden','true');s.innerHTML=ICON[n]||'';return s}
+const THEME={get(){try{return localStorage.getItem('ig_tema')||''}catch(e){return''}},set(v){try{localStorage.setItem('ig_tema',v)}catch(e){}}};
+function applyTheme(){const t=THEME.get();if(t)document.documentElement.setAttribute('data-theme',t);else document.documentElement.removeAttribute('data-theme')}
+function isDark(){const t=THEME.get();if(t)return t==='dark';return !!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)}
+const $=s=>document.querySelector(s);
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const nowTxt=()=>{const d=new Date();return today()+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
+const slug=s=>String(s||'x').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40)||'x';
+const num=v=>{const x=parseFloat(String(v==null?'':v).replace(',','.'));return isNaN(x)?0:x};
+const f2=x=>(Math.round(x*100)/100).toLocaleString('id-ID',{minimumFractionDigits:0,maximumFractionDigits:2});
+let tmr;function debounce(fn,ms=400){clearTimeout(tmr);tmr=setTimeout(fn,ms)}
+
+/* ================= definisi form (data-driven) ================= */
+const BR=['Baik','Rusak'];
+const OIL=['Bersih','Packing retak','Packing retak berminyak','Rembes/tetes'];
+const FISIK=['Mulus','Cacat sirip minor','Cacat sirip mayor','Bengkak'];
+const FUSEBASE=['Baik','Rusak','Tidak sesuai'];
+const FUSEAMP=['Sesuai standar','Deviasi 1 tkt diatas standar','Deviasi 2 tkt diatas standar','Fuse TR tidak ada/bypass'];
+const BUSBAR=['Baik','Longgar','Rusak'];
+const SCTR=['Baik','Rusak','Overload','Hilang'];
+const CAT=['Baik','Buram'];
+const ATAP=['Baik','Rusak ringan','Rusak / rembes','Rusak / bocor'];
+const LANTAI=['Baik','Rusak ringan','Rusak berat/hancur','Retak / hancur'];
+const DUCK=['Kering','Berisi air','Penuh air'];
+const VENT=['Baik','Rusak ringan','Hilang'];
+// item "klik 2": dua kelompok pilihan (mis. Ada/Tidak ada + Nyala/Tidak nyala). Jika kelompok 1 = "Tidak ada", kelompok 2 tidak perlu diisi.
+const ADA_NYALA=[['Ada','Tidak ada'],['Nyala','Tidak nyala']];
+const ADA_BAIK=[['Ada','Tidak ada'],['Baik','Rusak']];
+const AREAS=['Nagoya','Tiban','Batu Aji','Batam Center'];
+const FORMS={
+ tiang:{judul:'Inspeksi Gardu Tiang',no:'FM-bright-SBU-DIST-02-08',rev:'03',tgl:'2022-06-02',groups:[
+  {g:'TIANG',items:[{t:'Keadaan',o:['Baik','Retak/keropos','Miring']},{t:'Cat (untuk tiang besi)',o:CAT},{t:'No. tiang',o:['Baik','Buram','Tidak ada']},{t:'Pondasi tiang',o:['Baik','Rusak minor','Rusak mayor','Kotor/semak']}]},
+  {g:'SALURAN TM',items:[{t:'Keadaan isolator',o:['Baik','Kotor','Miring','Rusak']},{t:'Kabel TM: terminating akhir luar',o:BR},{t:'Kabel TM: pengaman mekanis',o:BR}]},
+  {g:'TRAFO 20kV',items:[{t:'Level minyak',o:['Penuh','Tidak penuh']},{t:'Kebocoran minyak trafo',o:OIL},{t:'Seal body trafo',o:OIL},{t:'Seal bushing TM/TR',o:OIL},{t:'Bushing trafo sisi TM/TR',o:BR},{t:'Kondisi fisik trafo',o:FISIK}]},
+  {g:'ARRESTER',items:[{t:'Kondisi fisik',o:BR},{t:'Kontinuitas',o:['Baik','Tidak baik'],extra:'Nilai'},{t:'Sambungan kabel',o:BR}]},
+  {g:'CUT OUT',items:[{t:'Kondisi fisik',o:BR},{t:'Sambungan kabel',o:BR}]},
+  {g:'PANEL TR',items:[{t:'Fuse base',o:FUSEBASE},{t:'Kesesuaian ampere fuse TR',o:FUSEAMP},{t:'Sambungan busbar',o:BUSBAR},{t:'Single core TR',o:SCTR},{t:'Cat panel',o:CAT}]},
+  {g:'KABEL TR',items:[{t:'Terminating akhir luar',o:BR},{t:'Sambungan TR',o:BR}]},
+  {g:'GROUNDING',items:[{t:'Grounding',ohm:'Nilai ukur grounding (Ω)',o:['Kabel lengkap','Kabel hilang','Tahanan tinggi']}]}
+ ]},
+ beton:{judul:'Inspeksi Gardu Beton',no:'FM-bright-SBU-DIST-02-07',rev:'03',tgl:'2022-06-02',groups:[
+  {g:'TRAFO 20kV',tmNA:true,items:[{t:'Level minyak',o:['Penuh','Tidak penuh']},{t:'Kebocoran minyak',o:OIL},{t:'Seal body trafo',o:OIL},{t:'Seal bushing TM/TR',o:OIL},{t:'Bushing TM/TR',o:['Baik','Panas berlebih/rusak']},{t:'Kondisi fisik trafo',o:FISIK}]},
+  {g:'KUBIKEL 20kV',items:[{t:'Busbar',o:['Baik','Corona']},{t:'Terminasi (ID) TM',o:['Baik','Rusak isolasinya']},{t:'Heater',o:['Baik','Rusak','Tidak ada','Tidak ada / Fully']},{t:'Body',o:BR},{t:'Lampu indikator',o:BR},{t:'Fuse TM',o:['Baik','Rusak jumperan']}]},
+  {g:'PANEL TR',tmNA:true,items:[{t:'Fuse base',o:FUSEBASE},{t:'Kesesuaian ampere fuse TR',o:FUSEAMP},{t:'Sambungan busbar',o:BUSBAR},{t:'Single core TR',o:SCTR}]},
+  {g:'EFI',items:[{t:'Lampu indikator',dua:ADA_NYALA},{t:'Power suplai & instalasi',dua:ADA_NYALA}]},
+  {g:'BANGUNAN & PAGAR',items:[{t:'Duck atap',o:ATAP},{t:'Lantai kerja dalam',o:LANTAI},{t:'Lantai rabat luar',o:LANTAI},{t:'Cat bangunan',o:CAT},{t:'Duck kabel TM/TR',o:DUCK},{t:'Ventilasi',o:VENT},{t:'Lamp & instalasi',o:BR},{t:'Pagar bangunan',dua:ADA_BAIK},{t:'Cat pagar',o:CAT},{t:'Engsel pintu gardu',o:BR},{t:'Dudukan gembok gardu',o:BR},{t:'Lingkungan gardu',o:['Bersih','Kotor']},{t:'Exhaust fan',dua:ADA_BAIK},{t:'Suhu dalam gardu',o:['Panas','Lembab']}]},
+  {g:'GROUNDING',items:[{t:'Grounding',ohm:'Nilai ukur grounding (Ω)',o:['Kabel lengkap','Kabel hilang','Tahanan grounding tinggi']}]}
+ ]},
+ beban:{judul:'Pengukuran Beban Trafo',no:'FM-bright-SBU-DIST-02-11',rev:'0',tgl:'2020-09-16'}
+};
+// penomoran otomatis + opsi "baik" (default: opsi pertama; ok:[..] untuk override; item dua: opsi pertama tiap kelompok)
+for(const k of['tiang','beton']){let n=0;for(const g of FORMS[k].groups)for(const it of g.items){it.n=++n;if(it.dua){it.o=it.dua.flat();it.ok=[0,it.dua[0].length]}else if(!it.ok)it.ok=[0];}}
+// jawaban item: plain => a.v ; klik-2 => a.p=[v1,v2] dan a.v = gabungan ("Ada + Nyala" / "Tidak ada")
+function ansV(it,a){if(!it.dua)return a.v||'';const p=a.p||[];if(!p[0])return'';if(p[0]===it.dua[0][1])return p[0];return p[1]?p[0]+' + '+p[1]:''}
+function badOf(it,a){const v=ansV(it,a);if(!v)return false;if(!it.dua)return!it.ok.includes(it.o.indexOf(v));const p=a.p||[];const ps=p[0]===it.dua[0][1]?[p[0]]:p;return ps.some(x=>x&&!it.ok.includes(it.o.indexOf(x)))}
+const HEALTH=['Baik','Cukup','Kurang','Buruk'];
+let MIN_FOTO_UMUM=1; // jumlah minimal foto umum (di bagian bawah form) agar form bisa diselesaikan
+
+/* ================= IndexedDB ================= */
+let db;
+function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open('inspeksi-gardu',1);r.onupgradeneeded=()=>{const d=r.result;d.createObjectStore('records',{keyPath:'id'});d.createObjectStore('photos',{keyPath:'pid'}).createIndex('rid','rid');d.createObjectStore('meta');};r.onsuccess=()=>{db=r.result;res()};r.onerror=()=>rej(r.error)})}
+function dbx(store,mode,fn){return new Promise((res,rej)=>{const t=db.transaction(store,mode);const out=fn(t.objectStore(store));t.oncomplete=()=>res(out&&'result'in out?out.result:undefined);t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error)})}
+const dbPut=(s,v,k)=>dbx(s,'readwrite',o=>o.put(v,k));
+const dbGet=(s,k)=>dbx(s,'readonly',o=>o.get(k));
+const dbAll=s=>dbx(s,'readonly',o=>o.getAll());
+const dbDel=(s,k)=>dbx(s,'readwrite',o=>o.delete(k));
+const photosOf=rid=>dbx('photos','readonly',o=>o.index('rid').getAll(rid));
+
+/* ================= state ================= */
+const S={tugas:[],records:[],petugas:'',area:''};
+async function loadState(){S.tugas=(await dbGet('meta','tugas'))||[];S.petugas=(await dbGet('meta','petugas'))||'';S.area=(await dbGet('meta','area'))||'';S.records=await dbAll('records')}
+const saveTugas=()=>dbPut('meta',S.tugas,'tugas');
+const saveRec=r=>{r.updated=new Date().toISOString();return dbPut('records',r)};
+
+/* ================= GPS ================= */
+function getGps(){return new Promise(res=>{if(!navigator.geolocation)return res(null);navigator.geolocation.getCurrentPosition(p=>res({lat:+p.coords.latitude.toFixed(6),lng:+p.coords.longitude.toFixed(6),acc:Math.round(p.coords.accuracy),ts:new Date().toISOString()}),()=>res(null),{enableHighAccuracy:true,timeout:15000,maximumAge:0})})}
+
+/* ================= CSV ================= */
+/* ===== baca file Excel (.xlsx) rencana inspeksi tanpa library ===== */
+async function xlsxRows(buf){const u=new Uint8Array(buf),dv=new DataView(buf),td=new TextDecoder();
+ let e=u.length-22;while(e>=0&&dv.getUint32(e,true)!==0x06054b50)e--;if(e<0)throw new Error('Bukan file .xlsx yang valid');
+ const n=dv.getUint16(e+10,true);let p=dv.getUint32(e+16,true);const ents={};
+ for(let i=0;i<n;i++){const meth=dv.getUint16(p+10,true),csz=dv.getUint32(p+20,true),nl=dv.getUint16(p+28,true),xl=dv.getUint16(p+30,true),cl=dv.getUint16(p+32,true),lo=dv.getUint32(p+42,true);ents[td.decode(u.subarray(p+46,p+46+nl))]={meth,csz,lo};p+=46+nl+xl+cl}
+ const get=async nm=>{const en=ents[nm];if(!en)return null;const lo=en.lo,ln=dv.getUint16(lo+26,true),lx=dv.getUint16(lo+28,true),d=u.subarray(lo+30+ln+lx,lo+30+ln+lx+en.csz);if(en.meth===0)return td.decode(d);const s=new Blob([d]).stream().pipeThrough(new DecompressionStream('deflate-raw'));return td.decode(await new Response(s).arrayBuffer())};
+ const X=t=>new DOMParser().parseFromString(t,'application/xml');const tx=el=>[...el.getElementsByTagName('t')].filter(t=>!t.closest||!t.closest('rPh')).map(t=>t.textContent).join('');
+ let sheetPath=null;const wb=await get('xl/workbook.xml'),rl=await get('xl/_rels/workbook.xml.rels');
+ if(wb&&rl){const sh=[...X(wb).getElementsByTagName('sheet')].find(s=>(s.getAttribute('state')||'visible')==='visible');if(sh){const rid=sh.getAttribute('r:id')||sh.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships','id');const rel=[...X(rl).getElementsByTagName('Relationship')].find(r=>r.getAttribute('Id')===rid);if(rel){let t=rel.getAttribute('Target');sheetPath=t.startsWith('/')?t.slice(1):'xl/'+t.replace(/^\.\//,'')}}}
+ if(!sheetPath||!ents[sheetPath])sheetPath=Object.keys(ents).filter(k=>/^xl\/worksheets\/[^/]+\.xml$/.test(k)).sort()[0];if(!sheetPath)throw new Error('Sheet tidak ditemukan di file Excel');
+ const ss=[];const sst=await get('xl/sharedStrings.xml');if(sst)for(const si of X(sst).getElementsByTagName('si'))ss.push(tx(si));
+ const dateX=new Set();const sty=await get('xl/styles.xml');if(sty){const sd=X(sty),cust={};for(const f of sd.getElementsByTagName('numFmt'))cust[f.getAttribute('numFmtId')]=f.getAttribute('formatCode')||'';
+  const xfs=sd.getElementsByTagName('cellXfs')[0];if(xfs)[...xfs.getElementsByTagName('xf')].forEach((x,i)=>{const id=+x.getAttribute('numFmtId');const c=cust[id];if((id>=14&&id<=22)||(id>=45&&id<=47)||(c&&/[dmy]/i.test(c.replace(/"[^"]*"|\[[^\]]*\]|\\./g,''))&&!/^general$/i.test(c)))dateX.add(i)})}
+ const rows=[];const sd=X(await get(sheetPath));
+ for(const r of sd.getElementsByTagName('row')){const ri=(+r.getAttribute('r')||rows.length+1)-1;const arr=[];
+  for(const c of r.getElementsByTagName('c')){const ref=c.getAttribute('r')||'';const m=/^([A-Z]+)/.exec(ref);if(!m)continue;let ci=0;for(const ch of m[1])ci=ci*26+ch.charCodeAt(0)-64;ci--;
+   const t=c.getAttribute('t'),vEl=c.getElementsByTagName('v')[0],v=vEl?vEl.textContent:'';let val='';
+   if(t==='s')val=ss[+v]||'';else if(t==='inlineStr')val=tx(c);else if(t==='b')val=v==='1'?'TRUE':'FALSE';else if(t==='str'||t==='e')val=v;
+   else if(v!==''){const num=parseFloat(v);if(dateX.has(+c.getAttribute('s'))&&num>20000&&num<80000)val=new Date(Date.UTC(1899,11,30)+Math.round(num)*864e5).toISOString().slice(0,10);else val=String(num)}
+   while(arr.length<ci)arr.push('');arr[ci]=String(val).trim()}
+  while(rows.length<ri)rows.push([]);rows[ri]=arr}
+ return rows.filter(r=>r.some(x=>String(x).trim()))}
+
+function parseCSV(txt){txt=txt.replace(/^\uFEFF/,'');const first=txt.split(/\r?\n/)[0]||'';const sep=(first.match(/;/g)||[]).length>(first.match(/,/g)||[]).length?';':',';const rows=[];let row=[],cur='',q=false;for(let i=0;i<txt.length;i++){const c=txt[i];if(q){if(c==='"'){if(txt[i+1]==='"'){cur+='"';i++}else q=false}else cur+=c}else if(c==='"')q=true;else if(c===sep){row.push(cur);cur=''}else if(c==='\n'||c==='\r'){if(c==='\r'&&txt[i+1]==='\n')i++;row.push(cur);cur='';if(row.some(x=>x.trim()))rows.push(row);row=[]}else cur+=c}row.push(cur);if(row.some(x=>x.trim()))rows.push(row);return rows}
+const normKey=s=>String(s).toLowerCase().replace(/[^a-z0-9]/g,'');
+function areaNorm(s){const k=normKey(s);if(!k)return'';if(k.includes('nagoya'))return'Nagoya';if(k.includes('tiban'))return'Tiban';if(k.includes('batuaji'))return'Batu Aji';if(/batamcent/.test(k))return'Batam Center';return''}
+function normJenis(s){s=String(s||'').toLowerCase();if(/pelanggan|\btm\b|kubikel/.test(s))return'tm';if(/tiang|portal|pole/.test(s))return'tiang';if(/beton|bangunan|kios|gedung|concrete/.test(s))return'beton';return''}
+// CSV tanpa baris judul: urutan mengikuti sheet master (nomor lama; nomor baru; lokasi; [pelanggan]; kVA)
+// KVA kosong => gardu pelanggan TM (selalu beton). Jenis 'tiang' tetap tiang (KVA kosong di situ = data belum lengkap)
+const jenisTm=(j,kvaKosong)=>kvaKosong&&(j===''||j==='beton')?'tm':j;
+function csvNoHeader(rows){const w=Math.max(...rows.map(r=>r.length));const isId=v=>/^[A-Za-z]+(\.[A-Za-z0-9]+)+$/.test(String(v||'').trim());
+ let cId=-1,best=0;for(let c=0;c<w;c++){const n=rows.filter(r=>isId(r[c])).length;if(n>best){best=n;cId=c}}
+ if(cId<0||best<rows.length*0.5)throw new Error('Format CSV tidak dikenali. Pakai baris judul (nomor_gardu_baru, lokasi_gardu, kva, ...) atau urutan kolom: nomor lama; nomor baru (mis. SDM.PSG.160); lokasi; pelanggan; kVA');
+ const cLama=cId>0?cId-1:-1,cNama=cId+1;if(cNama>=w)throw new Error('Kolom lokasi/nama gardu tidak ada setelah kolom nomor gardu baru');
+ const nums=[];for(let c=cNama+1;c<w;c++)nums.push(c);const cPel=nums.length>=2?nums[0]:-1,cKva=nums.length>=2?nums[1]:(nums.length?nums[0]:-1);
+ const out=[];for(const r of rows){const g=i=>i>=0?String(r[i]||'').trim():'';if(!isId(g(cId)))continue;const nama=g(cNama);if(!nama)continue;const kv=parseFloat(g(cKva).replace(',','.'));
+  out.push({id:g(cId),nama,lokasi:'',jenis:jenisTm('',cKva>=0&&!(kv>0)),penyulang:'',kva:kv>0?String(kv):'',lama:g(cLama),pelanggan:g(cPel)})}
+ if(!out.length)throw new Error('Tidak ada baris gardu terbaca');return out}
+function csvToTugas(txt){return rowsToTugas(parseCSV(txt))}
+function rowsToTugas(rows){if(rows.length<1)throw new Error('CSV kosong');
+ const KEYS=['nomorgardubaru','nomorgardu','idgardu','kodegardu','nogardu','namagardu','lokasigardu','lokasipekerjaan'];
+ let hi=-1;for(let i=0;i<Math.min(rows.length,25);i++){if(rows[i].map(normKey).some(k=>KEYS.includes(k))){hi=i;break}}
+ if(hi<0)return csvNoHeader(rows);
+ const nz=r=>r.filter(x=>String(x).trim()!=='');
+ const isSection=r=>{const n=nz(r);return n.length===1&&String(n[0]).trim().length>=12};
+ // judul kolom bisa bertingkat (mis. KAPASITAS TRAFO -> KVA, A): gabungkan baris judul + sub-judul
+ const hrow=rows[hi].map(normKey);const idc0=hrow.findIndex(k=>['nomorgardubaru','idgardu','kodegardu','nogardu','nomorgardu'].includes(k));
+ let end=hi+1;while(end<rows.length&&end<hi+4&&!(idc0>=0&&/[A-Za-z]/.test(rows[end][idc0]||''))&&!isSection(rows[end])&&nz(rows[end]).length>0&&(idc0>=0||false))end++;
+ const cols=Math.max(...rows.slice(hi,end).map(r=>r.length));const keys=[];for(let c=0;c<cols;c++){keys[c]=[];for(let r=hi;r<end;r++){const k=normKey(rows[r][c]||'');if(k&&isNaN(k))keys[c].push(k)}}
+ const col=(...names)=>{for(const n of names)for(let c=0;c<cols;c++)if(keys[c].includes(n))return c;return-1};
+ const cId=col('nomorgardubaru','idgardu','kodegardu','nogardu','nomorgardu','kode','id'),cNama=col('namagardu','nama','lokasigardu','lokasipekerjaan','gardu'),cLok0=col('area','wilayah','alamat','lokasi','lokasigardu'),cIdp=col('idpel','idpelanggan'),cRen=col('rencana','tglrencana'),cSel=col('selesai','target'),cPic=col('pic','petugas'),cKet=col('ket','keterangan'),cLama=col('nomorgardulama','nogardulama','idlama'),cPel=col('jumlahpelanggan','pelanggan'),
+  cJen=col('jenisgardu','jenis','tipe','type'),cPeny=col('penyulang','feeder'),cKva=col('kva','kapasitas','kapasitaskva'),cSt=col('status');
+ const cLok=cLok0===cNama?-1:cLok0;
+ if(cNama<0&&cId<0)throw new Error('Kolom nama/nomor gardu tidak ditemukan');
+ const out=[];let peny='';
+ for(const r of rows.slice(end)){const g=i=>i>=0?String(r[i]||'').trim():'';
+  if(cId>=0&&!/[A-Za-z]/.test(g(cId))){if(isSection(r))peny=nz(r)[0].trim();continue}
+  const nama=g(cNama)||g(cId);if(!nama)continue;
+  const kv=parseFloat(g(cKva).replace(',','.'));
+  if(cSt>=0&&/tidak ada|bongkar|hapus|non.?aktif/i.test(g(cSt)))continue;
+  const idp=g(cIdp);out.push({id:g(cId)||slug(nama),nama,lokasi:areaNorm(g(cLok)),jenis:idp?'tm':jenisTm(normJenis(g(cJen)),cKva>=0&&!(kv>0)),idpel:idp,rencana:g(cRen),selesai:g(cSel),pic:g(cPic),ket:g(cKet),penyulang:g(cPeny)||peny,kva:kv>0?String(kv):'',lama:g(cLama),pelanggan:g(cPel)})}
+ if(!out.length)throw new Error('Tidak ada baris gardu terbaca (cek kolom Nomor Gardu Baru terisi)');
+ return out}
+
+/* ================= foto + watermark ================= */
+async function loadBitmap(file){if(window.createImageBitmap){try{return await createImageBitmap(file)}catch(e){}}return new Promise((res,rej)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{res(im);};im.onerror=rej;im.src=u})}
+async function watermark(file,lines){const bm=await loadBitmap(file);const w0=bm.width||bm.naturalWidth,h0=bm.height||bm.naturalHeight;const sc=Math.min(1,1280/Math.max(w0,h0));const w=Math.round(w0*sc),hh=Math.round(h0*sc);const c=document.createElement('canvas');c.width=w;c.height=hh;const x=c.getContext('2d');x.drawImage(bm,0,0,w,hh);
+ const fs=Math.max(14,Math.round(w/45)),pad=Math.round(fs*.6),bh=lines.length*(fs*1.25)+pad*2;x.fillStyle='rgba(0,0,0,.55)';x.fillRect(0,hh-bh,w,bh);x.fillStyle='#fff';x.font=`${fs}px sans-serif`;x.textBaseline='top';lines.forEach((l,i)=>x.fillText(l,pad,hh-bh+pad+i*fs*1.25,w-pad*2));
+ return new Promise(r=>c.toBlob(r,'image/jpeg',.8))}
+let camCtx=null;
+function takePhoto(rec,ref,label,after){camCtx={rec,ref,label,after};const f=$('#fcam');f.value='';f.click()}
+$('#fcam').addEventListener('change',async e=>{const file=e.target.files[0];if(!file||!camCtx)return;const{rec,ref,label,after}=camCtx;try{const g=rec.gps;const lines=[rec.gardu.nama+(rec.gardu.lokasi?' — '+rec.gardu.lokasi:''),nowTxt()+'  '+(g?`GPS ${g.lat}, ${g.lng} (±${g.acc}m)`:'GPS: -'),(rec.petugas||'')+' | '+label];
+ const blob=await watermark(file,lines);await dbPut('photos',{pid:rec.id+'-'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),rid:rec.id,ref,ts:new Date().toISOString(),blob});after&&after()}catch(err){alert('Gagal memproses foto: '+err.message)}});
+async function fillThumbs(box,rec,ref,locked){box.innerHTML='';const ps=(await photosOf(rec.id)).filter(p=>p.ref===ref);for(const p of ps){const u=URL.createObjectURL(p.blob);box.append(h('div',{class:'th'},h('img',{src:u,onclick:()=>window.open(u)}),locked?null:h('button',{class:'x',onclick:async()=>{if(confirm('Hapus foto ini?')){await dbDel('photos',p.pid);fillThumbs(box,rec,ref,locked)}}},'×')))}}
+
+/* ================= navigasi ================= */
+const app=$('#app');
+function topBar(title,back){const tb=h('button',{class:'ibtn',title:'Ganti tema terang/gelap','aria-label':'Ganti tema',onclick:()=>{THEME.set(isDark()?'light':'dark');applyTheme();tb.textContent='';tb.append(ico(isDark()?'moon':'sun',18))}},ico(isDark()?'moon':'sun',18));
+ return h('header',{class:'top'},back?h('button',{onclick:back},'‹ Kembali'):h('div',{class:'logo'},ico('bolt',20)),h('h1',null,title),tb)}
+function dlg(title,fields){return new Promise(res=>{const d=h('dialog');const inputs={};const f=h('form',{method:'dialog'},h('h3',null,title));for(const fl of fields){f.append(h('label',{class:'f'},fl.label));const i=fl.opts?h('select',null,fl.opts.map(o=>h('option',{value:o[0]},o[1]))):h('input',{type:'text',value:fl.value||''});inputs[fl.key]=i;f.append(i)}
+ f.append(h('div',{class:'row',style:'margin-top:12px'},h('button',{class:'btn sec',value:'x',type:'submit'},'Batal'),h('button',{class:'btn',value:'ok',type:'submit'},'OK')));d.append(f);document.body.append(d);d.addEventListener('close',()=>{const ok=d.returnValue==='ok';const o={};for(const k in inputs)o[k]=inputs[k].value.trim();d.remove();res(ok?o:null)});d.showModal()})}
+const JENIS_OPTS=[['','— pilih —'],['tiang','Gardu Tiang'],['beton','Gardu Beton'],['tm','Beton pelanggan TM (tanpa trafo)']];
+const JENIS_LBL={tiang:'Tiang',beton:'Beton',tm:'Pelanggan TM'};
+const formOf=j=>j==='tm'?'beton':j;
+
+/* ================= HOME ================= */
+function latestRec(garduId,form){const l=S.records.filter(r=>r.gardu.id===garduId&&r.form===form);l.sort((a,b)=>b.rev-a.rev||b.created.localeCompare(a.created));return l[0]}
+const LF={q:'',tgl:'',st:'',n:30},PAGE=30;
+function stCode(t){const ins=latestRec(t.id,'tiang')||latestRec(t.id,'beton'),b=latestRec(t.id,'beban');const iok=ins&&ins.status==='selesai',bok=b&&b.status==='selesai';if(iok&&(t.jenis==='tm'||bok))return'lengkap';return(ins||b)?'proses':'belum'}
+async function renderHome(){await loadState();app.innerHTML='';
+ app.append(topBar('Inspeksi Gardu'));
+ const m=h('main');
+ const pet=h('input',{type:'text',value:S.petugas,placeholder:'Nama petugas pelaksana'});pet.addEventListener('input',()=>{S.petugas=pet.value;dbPut('meta',S.petugas,'petugas')});
+ m.append(h('div',{class:'card'},h('label',{class:'f'},'Petugas pelaksana'),pet,
+  h('div',{class:'row',style:'margin-top:10px'},h('button',{class:'btn sec',onclick:()=>{const f=$('#fcsv');f.value='';f.click()}},ico('inbox',17),'Impor penugasan (Excel/CSV)'),h('button',{class:'btn sec',onclick:addManual},ico('plus',17),'+ Gardu manual'))));
+ // satu daftar gardu: penugasan + gardu yang sudah pernah diinspeksi tapi tidak ada di penugasan; status inspeksi/beban/pengiriman ada di kartu masing-masing
+ const known=new Set(S.tugas.map(t=>t.id)),extra=[];for(const r of S.records){if(!known.has(r.gardu.id)){known.add(r.gardu.id);extra.push({...tugasOf(r),_extra:true})}}
+ const list=[...S.tugas,...extra];
+ {let ch=false;for(const t of list){if(!t.jenis){const ins=latestRec(t.id,'tiang')||latestRec(t.id,'beton');if(ins){t.jenis=ins.tm?'tm':ins.form;if(!t._extra)ch=true}}}if(ch)saveTugas()}
+ if(!list.length){m.append(h('h2',null,'Daftar gardu'),h('div',{class:'card mut'},'Belum ada gardu. Impor file penugasan dari kantor, atau tambah gardu manual.'))}
+ else{
+  const pending=S.records.filter(r=>r.status==='selesai'&&!r.sentAt);
+  if(pending.length)m.append(h('div',{class:'card'},h('div',{class:'mut'},`${pending.length} inspeksi selesai belum dikirim.`),h('button',{class:'btn',style:'margin-top:8px;width:100%',onclick:()=>kirim(pending)},ico('send'),'Buat & kirim paket ('+pending.length+')')));
+  m.append(h('div',{class:'sech'},h('h2',null,'Daftar gardu'),h('span',{class:'badge '+(pending.length?'draft':'ok')},pending.length?pending.length+' belum dikirim':(S.records.length?'Semua terkirim':'Tersimpan di HP'))));
+  const garduCard=t=>{const card=h('div',{class:'card'});
+   card.append(h('div',{class:'row',style:'flex-wrap:nowrap;align-items:flex-start'},h('div',{style:'flex:1;min-width:0'},h('div',{class:'gname'},h('b',null,t.nama)),h('div',{class:'gmeta'},[!t.manual&&t.id,t.lokasi,t.kva&&(t.kva+' kVA'),t.penyulang&&('Peny. '+t.penyulang),t.rencana&&('Rencana '+t.rencana),t.pic&&('PIC '+t.pic)].filter(Boolean).join(' · '))),h('span',{class:'badge',style:'flex:0;white-space:nowrap'},JENIS_LBL[t.jenis]||'Jenis ?'),
+    t._extra?null:h('button',{class:'btn sec sm',style:'flex:0',title:'Hapus dari daftar penugasan','aria-label':'Hapus dari daftar penugasan',onclick:async()=>{if(confirm('Hapus dari daftar penugasan? (data inspeksi tetap tersimpan)')){S.tugas=S.tugas.filter(x=>x!==t);await saveTugas();renderHome()}}},ico('trash',15))));
+   for(const fm of['inspeksi','beban']){if(fm==='beban'&&t.jenis==='tm')continue;
+    const r=fm==='inspeksi'?(t.jenis&&formOf(t.jenis)?latestRec(t.id,formOf(t.jenis)):(latestRec(t.id,'tiang')||latestRec(t.id,'beton'))):latestRec(t.id,'beban');
+    const lbl=fm==='inspeksi'?'Inspeksi':'Ukur Beban';const done=r&&r.status==='selesai';
+    const stt=!r?['Belum',''] :!done?['Draft','draft']:r.sentAt?['Terkirim','ok']:['Selesai, belum dikirim','ok'];
+    const row=h('div',{class:'row',style:'margin-top:8px;flex-wrap:wrap;align-items:center'},
+     h('button',{class:'btn '+(done?'sec':''),style:'flex:1 1 150px',onclick:()=>r?renderForm(r):openGardu(t,fm)},ico(fm==='inspeksi'?'clip':'gauge',17),lbl+': '+(!r?'Mulai':done?'Lihat':'Lanjutkan')),
+     h('span',{class:'badge '+stt[1],style:'flex:0;white-space:nowrap'},stt[0]));
+    if(done)row.append(h('button',{class:'btn sec sm',style:'flex:0;white-space:nowrap',onclick:()=>kirim([r])},ico('refresh',14),r.sentAt?'Kirim ulang':'Kirim'));
+    else if(r)row.append(h('button',{class:'btn sec sm',style:'flex:0',onclick:async()=>{if(confirm('Hapus draft ini beserta fotonya?')){for(const p of await photosOf(r.id))await dbDel('photos',p.pid);await dbDel('records',r.id);renderHome()}}},'Hapus'));
+    card.append(row)}
+   card.append(statusLine(t));return card};
+  // filter + tampil bertahap (daftar bisa ribuan gardu)
+  const dates=[...new Set(list.map(t=>t.rencana).filter(Boolean))].sort();
+  const box=h('div'),cnt=h('div',{class:'mut',style:'margin:0 2px 8px'});
+  const draw=()=>{const q=LF.q.toLowerCase().trim();const f=list.filter(t=>(!q||[t.nama,t.id,t.lama,t.penyulang,t.lokasi,t.pic,t.rencana].join(' ').toLowerCase().includes(q))&&(!LF.tgl||t.rencana===LF.tgl)&&(!LF.st||stCode(t)===LF.st));
+   box.innerHTML='';cnt.textContent=f.length===list.length?`${list.length} gardu`:`${f.length} dari ${list.length} gardu`;
+   f.slice(0,LF.n).forEach(t=>box.append(garduCard(t)));
+   if(f.length>LF.n)box.append(h('button',{class:'btn sec',style:'width:100%;margin-bottom:12px',onclick:()=>{LF.n+=PAGE;draw()}},`Tampilkan lagi (${f.length-LF.n} sisa)`));
+   if(!f.length)box.append(h('div',{class:'card mut'},'Tidak ada gardu yang cocok dengan filter.'))};
+  if(list.length>5){const fil=h('div',{class:'fil'});
+   const cari=h('input',{type:'text',placeholder:'Cari gardu (nama / nomor / penyulang / PIC)…',value:LF.q});cari.addEventListener('input',()=>{LF.q=cari.value;LF.n=PAGE;draw()});fil.append(cari);
+   if(dates.length){const st=h('select',null,h('option',{value:''},'Semua tanggal'),dates.map(d=>h('option',{value:d},d)));st.value=LF.tgl;st.addEventListener('change',()=>{LF.tgl=st.value;LF.n=PAGE;draw()});fil.append(st)}
+   const ss=h('select',null,[['','Semua status'],['belum','Belum dikerjakan'],['proses','Sedang dikerjakan'],['lengkap','Lengkap']].map(o=>h('option',{value:o[0]},o[1])));ss.value=LF.st;ss.addEventListener('change',()=>{LF.st=ss.value;LF.n=PAGE;draw()});fil.append(ss);
+   m.append(fil)}
+  m.append(cnt,box);draw()}
+ m.append(h('p',{class:'mut',style:'text-align:center;margin-top:20px'},'Data tersimpan di HP ini (IndexedDB). Jangan hapus data browser sebelum paket terkirim.'));
+ app.append(m)}
+// kelengkapan: inspeksi + (ukur beban trafo wajib untuk gardu non-TM)
+const tugasOf=rec=>S.tugas.find(x=>x.id===rec.gardu.id)||{id:rec.gardu.id,nama:rec.gardu.nama,lokasi:rec.gardu.lokasi,jenis:rec.gardu.jenis,penyulang:rec.gardu.penyulang,kva:''};
+const bebanOk=id=>{const b=latestRec(id,'beban');return !!(b&&b.status==='selesai')};
+function statusLine(t){const ins=latestRec(t.id,'tiang')||latestRec(t.id,'beton');const miss=[];if(!(ins&&ins.status==='selesai'))miss.push('inspeksi');if(t.jenis!=='tm'&&!bebanOk(t.id))miss.push('ukur beban trafo');
+ return miss.length?h('div',{class:'mut',style:'margin-top:6px'},'Belum lengkap: '+miss.join(' + ')):h('div',{style:'margin-top:6px'},h('span',{class:'badge ok'},'Lengkap'))}
+$('#fcsv').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const list=/\.xlsx$/i.test(f.name)?rowsToTugas(await xlsxRows(await f.arrayBuffer())):csvToTugas(await f.text());const by=new Map(S.tugas.map(t=>[t.id,t]));let baru=0;for(const t of list){if(by.has(t.id)){Object.assign(by.get(t.id),{...t,jenis:t.jenis||by.get(t.id).jenis,lokasi:t.lokasi||by.get(t.id).lokasi})}else{S.tugas.push(t);baru++}}await saveTugas();alert(`Terbaca ${list.length} gardu (${baru} baru).`);renderHome()}catch(err){alert('Gagal impor file penugasan: '+err.message)}});
+async function addManual(){const o=await dlg('Tambah gardu',[{key:'nama',label:'Nama gardu'},{key:'lokasi',label:'Area',opts:[['','— pilih —'],...AREAS.map(a=>[a,a])]},{key:'jenis',label:'Jenis gardu',opts:JENIS_OPTS}]);if(!o||!o.nama)return;S.tugas.push({id:slug(o.nama)+'-'+Date.now().toString(36).slice(-4),nama:o.nama,lokasi:o.lokasi,jenis:o.jenis,penyulang:'',kva:'',manual:true});await saveTugas();renderHome()}
+async function openGardu(t,fm){let form=fm==='inspeksi'?formOf(t.jenis):'beban';if(fm==='inspeksi'&&!form){const o=await dlg('Jenis gardu '+t.nama,[{key:'jenis',label:'Jenis gardu',opts:JENIS_OPTS}]);if(!o||!o.jenis)return;t.jenis=o.jenis;form=formOf(o.jenis);await saveTugas()}
+ let r=latestRec(t.id,form);if(r){return renderForm(r)}
+ r=newRec(t,form);await saveRec(r);S.records.push(r);renderForm(r)}
+function newRec(t,form,rev=1,grp){const fd=FORMS[form];const id=slug(t.id)+'-'+form+'-'+today().replace(/-/g,'')+'-'+Math.random().toString(36).slice(2,6);
+ const r={id,grup:grp||id,rev,form,no_dokumen:fd.no,revisi_form:fd.rev,gardu:{id:t.id,nama:t.nama,lokasi:t.lokasi||S.area||'',jenis:t.jenis||'',penyulang:t.penyulang||'',lama:t.lama||'',pelanggan:t.pelanggan||'',manual:!!t.manual},tanggal:today(),petugas:S.petugas,status:'draft',tm:false,gps:null,answers:{},footer:{},temuan:[],created:new Date().toISOString(),updated:new Date().toISOString(),device:navigator.userAgent.slice(0,120)};
+ if(form==='beban')r.beban={jurusan:[{}],tegangan:{},netral:'',trafo:[{kapasitas:t.kva||''},{}],kubikel:{jenis_gardu:t.jenis||''},ukur:{waktu:'',pukul:''},tgl_laporan:'',saran:'',ttd:{asman:'',pengawas:'',petugas:S.petugas}};
+
+ if(form==='beton'&&t.jenis==='tm')setTm(r,true);
+ return r}
+function setTm(rec,v){rec.tm=!!v;rec.gardu.jenis=v?'tm':'beton';for(const g of FORMS.beton.groups)if(g.tmNA)for(const it of g.items){if(v)rec.answers[it.n]={v:'Tidak berlaku',na:true};else if(rec.answers[it.n]&&rec.answers[it.n].na)delete rec.answers[it.n]}
+ const t=S.tugas.find(x=>x.id===rec.gardu.id);if(t){t.jenis=rec.gardu.jenis;saveTugas()}}
+
+/* ================= FORM ================= */
+function sel(label,val,opts,onin){const s=h('select',null,opts.map(o=>h('option',{value:o},o||'— pilih —')));if(val&&!opts.includes(val))s.append(h('option',{value:val},val));s.value=val||'';s.addEventListener('change',()=>onin(s.value));return h('div',null,h('label',{class:'f'},label),s)}
+function field(label,val,onin,type='text',ph=''){const i=h('input',{type,value:val==null?'':val,placeholder:ph});i.addEventListener('input',()=>onin(i.value));return h('div',null,h('label',{class:'f'},label),i)}
+async function renderForm(rec){app.innerHTML='';const locked=rec.status==='selesai';const fd=FORMS[rec.form];
+ const persist=()=>debounce(()=>saveRec(rec));
+ app.append(topBar(fd.judul,()=>{saveRec(rec).then(renderHome)}));
+ const m=h('main');
+ if(locked)m.append(h('div',{class:'warn',style:'margin-bottom:12px'},'Inspeksi sudah selesai & terkunci. Untuk koreksi, buat revisi (versi baru).',h('div',{style:'margin-top:6px'},h('button',{class:'btn sm',onclick:async()=>{const n=newRec({...rec.gardu},rec.form,rec.rev+1,rec.grup);n.answers=JSON.parse(JSON.stringify(rec.answers));n.footer=JSON.parse(JSON.stringify(rec.footer));if(rec.beban)n.beban=JSON.parse(JSON.stringify(rec.beban));n.catatan_revisi='Revisi dari '+rec.id;await saveRec(n);S.records.push(n);renderForm(n)}},'Buat revisi'))));
+ const fs=h('fieldset',{disabled:locked});
+ // header
+ const gpsTxt=h('span',{class:'mut'});const showGps=()=>{gpsTxt.textContent=rec.gps?`GPS ${rec.gps.lat}, ${rec.gps.lng} (±${rec.gps.acc} m)`:'GPS belum diambil'};showGps();
+ const doGps=async()=>{gpsTxt.textContent='Mengambil GPS…';rec.gps=await getGps();showGps();if(!rec.gps)alert('GPS gagal. Pastikan lokasi aktif & izin diberikan (di HP harus lewat https atau buka dari file di Chrome).');saveRec(rec)};
+ fs.append(h('div',{class:'card'},h('div',{class:'mut'},fd.no+' · Rev '+fd.rev+' · '+fd.tgl),rec.gardu.manual?null:h('div',{class:'mut'},'No. gardu: '+rec.gardu.id+(rec.gardu.lama?' (lama '+rec.gardu.lama+')':'')+(rec.gardu.penyulang?' · '+rec.gardu.penyulang:'')),
+  tmToggle(rec,locked),
+  field('Nama gardu',rec.gardu.nama,v=>{rec.gardu.nama=v;persist()}),sel('Area',rec.gardu.lokasi,['',...AREAS],v=>{rec.gardu.lokasi=v;if(v){S.area=v;dbPut('meta',v,'area')}persist()}),
+  h('div',{class:'row'},field('Tanggal',rec.tanggal,v=>{rec.tanggal=v;persist()},'date'),field('Petugas pelaksana',rec.petugas,v=>{rec.petugas=v;persist()})),
+  h('div',{class:'row',style:'margin-top:8px'},gpsTxt,locked?null:h('button',{type:'button',class:'btn sec sm',style:'flex:0;white-space:nowrap',onclick:doGps},'Ambil GPS'))));
+ if(!rec.gps&&!locked)doGps();
+ if(rec.form==='beban')renderBeban(fs,rec,persist);else renderInspeksi(fs,rec,persist,locked);
+ m.append(fs);app.append(m);
+ if(!locked)app.append(h('div',{class:'bar'},h('button',{class:'btn sec',onclick:async()=>{await saveRec(rec);renderHome()}},'Simpan & keluar'),h('button',{class:'btn',onclick:()=>selesai(rec)},'Selesai & kunci')));
+ else app.append(h('div',{class:'bar'},h('button',{class:'btn',onclick:()=>kirim([rec])},'Kirim paket')))}
+
+function tmToggle(rec,locked){if(rec.form!=='beton')return null;if(locked)return rec.tm?h('div',{class:'mut'},'Gardu pelanggan TM — trafo & panel TR tidak berlaku'):null;
+ const cb=h('input',{type:'checkbox'});cb.checked=!!rec.tm;cb.addEventListener('change',async()=>{if(cb.checked&&!confirm('Tandai sebagai gardu pelanggan TM? Kelompok TRAFO dan PANEL TR jadi tidak berlaku (jawaban di kelompok itu dihapus).')){cb.checked=false;return}setTm(rec,cb.checked);await saveRec(rec);renderForm(rec)});
+ return h('label',{style:'display:flex;gap:8px;align-items:center;margin-top:8px'},cb,'Gardu pelanggan TM (tanpa trafo & panel TR)')}
+function renderInspeksi(fs,rec,persist,locked){const fd=FORMS[rec.form];
+ for(const g of fd.groups){if(rec.tm&&g.tmNA){fs.append(h('h2',null,g.g),h('div',{class:'card mut'},'Tidak berlaku — gardu pelanggan TM'));continue}fs.append(h('h2',null,g.g));const card=h('div',{class:'card'});
+  for(const it of g.items){const a=rec.answers[it.n]||(rec.answers[it.n]={});const row=h('div',{class:'item'});row.append(h('div',{class:'t'},it.n+'. '+it.t));
+   const det=h('div',{class:'detail'});
+   const refresh=()=>{const v=ansV(it,a);det.classList.toggle('on',!!(v&&(badOf(it,a)||it.extra||a.note)))};
+   let chipsEl;
+   if(!it.dua){chipsEl=h('div',{class:'chips'});
+    it.o.forEach((opt,i)=>{const id='q'+it.n+'_'+i;const inp=h('input',{type:'radio',name:'q'+it.n,id});if(a.v===opt)inp.checked=true;inp.addEventListener('change',()=>{a.v=opt;refresh();persist()});chipsEl.append(inp,h('label',{for:id,class:'chip '+(it.ok.includes(i)?'good':'bad')},opt))})}
+   else{chipsEl=h('div');const rows=[h('div',{class:'chips'}),h('div',{class:'chips',style:'margin-top:6px'})];
+    const draw2=()=>{rows[1].style.display=(a.p&&a.p[0]===it.dua[0][1])?'none':''};
+    it.dua.forEach((grp,gi)=>{const off=gi?it.dua[0].length:0;grp.forEach((opt,j)=>{const id='q'+it.n+'_'+gi+'_'+j;const inp=h('input',{type:'radio',name:'q'+it.n+'_'+gi,id});if(a.p&&a.p[gi]===opt)inp.checked=true;
+      inp.addEventListener('change',()=>{a.p=a.p||[];a.p[gi]=opt;if(gi===0&&opt===it.dua[0][1]){a.p[1]='';rows[1].querySelectorAll('input').forEach(x=>x.checked=false)}a.v=ansV(it,a);draw2();refresh();persist()});
+      rows[gi].append(inp,h('label',{for:id,class:'chip '+(it.ok.includes(off+j)?'good':'bad')},opt))})});
+    draw2();chipsEl.append(...rows)}
+   const note=h('input',{type:'text',placeholder:'Catatan temuan',value:a.note||''});note.addEventListener('input',()=>{a.note=note.value;persist()});det.append(note);
+   if(it.extra){const nv=h('input',{type:'text',placeholder:it.extra,value:a.nilai||'',style:'flex:0 1 110px'});nv.addEventListener('input',()=>{a.nilai=nv.value;persist()});det.append(nv)}
+   const thumbs=h('div',{class:'thumbs'});const ref='item'+it.n;
+   if(!locked)det.append(h('button',{type:'button',class:'btn sec sm',style:'flex:0',onclick:()=>takePhoto(rec,ref,`#${it.n} ${it.t}`+(a.v?` = ${a.v}`:''),()=>fillThumbs(thumbs,rec,ref,locked))},'📷 Foto'));
+   det.append(thumbs);fillThumbs(thumbs,rec,ref,locked);refresh();
+   let ohmEl=null;if(it.ohm){const ov=h('input',{type:'text',inputmode:'decimal',placeholder:'mis. 0,29  (atau: Tidak terjangkau)',value:a.nilai||'',disabled:!!locked});ov.addEventListener('input',()=>{a.nilai=ov.value;persist()});ohmEl=h('div',{style:'margin-top:8px'},h('label',{class:'f'},it.ohm),ov)}
+   row.append(chipsEl,...(ohmEl?[ohmEl]:[]),det);card.append(row)}
+  fs.append(card)}
+ // footer
+ const ft=rec.footer;const optsRow=(label,list,key)=>{const wrap=h('div',null,h('label',{class:'f'},label));const c=h('div',{class:'chips'});list.forEach((o,i)=>{const id='ft'+key+i;const inp=h('input',{type:'radio',name:'ft'+key,id});if(ft[key]===o)inp.checked=true;inp.addEventListener('change',()=>{ft[key]=o;persist()});c.append(inp,h('label',{for:id,class:'chip '+(i===0?'good':'bad')},o))});wrap.append(c);return wrap};
+ const ta=(label,key)=>{const t=h('textarea',null,ft[key]||'');t.addEventListener('input',()=>{ft[key]=t.value;persist()});return h('div',null,h('label',{class:'f'},label),t)};
+ fs.append(h('h2',null,'Penutup'),h('div',{class:'card'},ta('Catatan hasil inspeksi — tulis manual (temuan dari hasil inspeksi otomatis ditambahkan di bawahnya)','catatan'),optsRow('Health Index',HEALTH,'health'),ta('Catatan lain','catatan_lain'),
+  optsRow('KWH pantau terpasang',['Ya','Tidak'],'kwh_pantau'),h('div',{class:'row'},field('Merk KWH / modem',ft.merk_kwh,v=>{ft.merk_kwh=v;persist()}),field('Ratio CT',ft.ratio_ct,v=>{ft.ratio_ct=v;persist()}))));
+ const umum=h('div',{class:'card'},h('div',{class:'t'},'Foto — WAJIB (min. '+MIN_FOTO_UMUM+', boleh lebih dari 1)'));const th=h('div',{class:'thumbs'});if(!locked)umum.append(h('button',{type:'button',class:'btn sec sm',onclick:()=>takePhoto(rec,'umum','Foto umum',()=>fillThumbs(th,rec,'umum',locked))},'📷 Tambah foto'));umum.append(th);fillThumbs(th,rec,'umum',locked);fs.append(umum)}
+
+/* ---- beban ---- */
+const JR=[['ir','I-R (A)'],['is','I-S (A)'],['it','I-T (A)'],['in','I-N (A)']];
+const VT=[['vrn','V R-N'],['vsn','V S-N'],['vtn','V T-N'],['vrs','V R-S'],['vrt','V R-T'],['vst','V S-T']];
+// tegangan cukup sekali per pengukuran; data lama (tegangan per jurusan) dipindah ke b.tegangan
+function fixBeban(b){if(!b.tegangan){b.tegangan={};for(const j of b.jurusan)for(const[k]of VT)if(j[k]!==''&&j[k]!=null&&!b.tegangan[k])b.tegangan[k]=j[k]}for(const j of b.jurusan){for(const[k]of VT)delete j[k];delete j.nama}if(b.netral==null)b.netral='';if(!b.tgl_laporan)b.tgl_laporan='';b.ukur=b.ukur||{waktu:'',pukul:''}}
+function calcBeban(b){const s={r:0,s:0,t:0,n:0};for(const j of b.jurusan){s.r+=num(j.ir);s.s+=num(j.is);s.t+=num(j.it);s.n+=num(j.in)}const kva=b.trafo.reduce((a,t)=>a+num(t.kapasitas),0);const iNom=kva/0.6928;const pct=iNom>0?(((s.r+s.s+s.t)/3)/iNom)*100:null;return{sum:s,kva,iNom,pct}}
+function renderBeban(fs,rec,persist){const b=rec.beban;fixBeban(b);const res=h('div',{class:'card res'});
+ const upd=()=>{const c=calcBeban(b);res.innerHTML='';res.append(h('div',{class:'t'},'Hasil hitung otomatis'),h('div',null,`Jumlah arus R / S / T / N: ${f2(c.sum.r)} / ${f2(c.sum.s)} / ${f2(c.sum.t)} / ${f2(c.sum.n)} A`),h('div',null,`Kapasitas trafo total: ${f2(c.kva)} kVA (I nominal ${f2(c.iNom)} A)`),h('div',null,'Beban trafo sampai saat ini: ',h('b',null,c.pct==null?'isi kapasitas trafo':f2(c.pct)+' %')))};
+ // tabel jurusan (penampang + arus)
+ fs.append(h('h2',null,'Arus per jurusan (maks 16)'));const jbox=h('div');const drawJ=()=>{jbox.innerHTML='';b.jurusan.forEach((j,idx)=>{const c=h('div',{class:'jr'},h('div',{class:'row'},h('b',{style:'flex:0'},'#'+(idx+1)),field('Penampang kabel (NYFGBY, mm²)',j.penampang,v=>{j.penampang=v;persist()})));
+  const g=h('div',{class:'grid',style:'margin-top:6px'});for(const[k,l]of JR){const i=h('input',{type:'number',inputmode:'decimal',step:'any',value:j[k]==null?'':j[k]});i.addEventListener('input',()=>{j[k]=i.value;upd();persist()});g.append(h('div',null,h('label',null,l),i))}
+  c.append(g);if(b.jurusan.length>1)c.append(h('button',{type:'button',class:'btn sec sm',style:'margin-top:6px',onclick:()=>{b.jurusan.splice(idx,1);drawJ();upd();persist()}},'Hapus jurusan'));jbox.append(c)});
+  if(b.jurusan.length<16)jbox.append(h('button',{type:'button',class:'btn sec',style:'width:100%',onclick:()=>{b.jurusan.push({});drawJ();persist()}},'+ Tambah jurusan'))};drawJ();fs.append(jbox);
+ // tegangan di gardu (sekali)
+ const tg=h('div',{class:'grid3'});for(const[k,l]of VT){const i=h('input',{type:'number',inputmode:'decimal',step:'any',value:b.tegangan[k]==null?'':b.tegangan[k]});i.addEventListener('input',()=>{b.tegangan[k]=i.value;persist()});tg.append(h('div',null,h('label',null,l),i))}
+ fs.append(h('h2',null,'Tegangan di gardu (cukup sekali)'),h('div',{class:'card'},tg));
+ // hasil + arus netral manual
+ fs.append(res,h('div',{class:'card'},field('Arus netral di trafo (A) — isi manual',b.netral,v=>{b.netral=v;persist()},'number')));
+ // pengukuran
+ fs.append(h('h2',null,'Pengukuran'),h('div',{class:'card'},h('div',{class:'row'},sel('Siang / malam *)',b.ukur.waktu,['','Siang','Malam'],v=>{b.ukur.waktu=v;persist()}),field('Pukul',b.ukur.pukul,v=>{b.ukur.pukul=v;persist()},'time')),h('div',{class:'mut',style:'margin-top:6px'},'Dikosongkan = terisi otomatis dengan jam saat "Selesai & kunci".')));
+ // data peralatan gardu distribusi
+ fs.append(h('h2',null,'Data peralatan gardu distribusi (trafo maks 2)'));
+ const TF=[['merk','Merk trafo'],['kapasitas','Kapasitas trafo (kVA)'],['type','Type trafo (Elas/Bush)'],['tap','Tap changer'],['noseri','No. seri trafo'],['tahun','Tahun buat'],['kap_rak','Kapasitas rak TR'],['fusebase','Fuse base'],['single_core','Ukuran single core NYY'],['jml_terpasang','Jml. jurusan terpasang'],['jml_terpakai','Jml. jurusan terpakai']];
+ b.trafo.forEach((t,idx)=>{const c=h('div',{class:'card'},h('div',{class:'t'},'Trafo '+(idx+1)));const g=h('div',{class:'grid3'});for(const[k,l]of TF){const i=h('input',{type:'text',value:t[k]==null?'':t[k]});i.addEventListener('input',()=>{t[k]=i.value;if(k==='kapasitas')upd();persist()});g.append(h('div',null,h('label',null,l),i))}c.append(g);fs.append(c)});
+ const KB=[['lbs','Kubikel TM 20 kV LBS'],['tp3','Kubikel TM 20 kV TP3'],['cb','Kubikel TM 20 kV CB'],['vt','Kubikel TM 20 kV VT'],['gam','Kubikel TM 20 kV GAM'],['rmu','Kubikel TM 20 kV RMU'],['merk_type','Merk / type kubikel'],['jenis_gardu','Jenis gardu']];
+ const kc=h('div',{class:'card'},h('div',{class:'t'},'Kubikel & jenis gardu'));const kg=h('div',{class:'grid'});for(const[k,l]of KB){const i=h('input',{type:'text',value:b.kubikel[k]||''});i.addEventListener('input',()=>{b.kubikel[k]=i.value;persist()});kg.append(h('div',null,h('label',null,l),i))}kc.append(kg);fs.append(kc);
+ const sr=h('textarea',null,b.saran||'');sr.addEventListener('input',()=>{b.saran=sr.value;persist()});
+ fs.append(h('h2',null,'Saran-saran & tanda tangan'),h('div',{class:'card'},h('label',{class:'f'},'Saran-saran'),sr,field('Asman Prev',b.ttd.asman,v=>{b.ttd.asman=v;persist()}),field('Pengawas',b.ttd.pengawas,v=>{b.ttd.pengawas=v;persist()}),field('Petugas pelaksana',b.ttd.petugas,v=>{b.ttd.petugas=v;persist()}),h('div',{class:'mut',style:'margin-top:6px'},'Tanggal laporan terisi otomatis saat "Selesai & kunci".')));
+ const th=h('div',{class:'thumbs'});fs.append(h('div',{class:'card'},h('div',{class:'t'},'Foto — WAJIB (min. '+MIN_FOTO_UMUM+', boleh lebih dari 1): panel / papan ukur'),rec.status==='selesai'?null:h('button',{type:'button',class:'btn sec sm',onclick:()=>takePhoto(rec,'umum','Pengukuran beban',()=>fillThumbs(th,rec,'umum',false))},'📷 Tambah foto'),th));fillThumbs(th,rec,'umum',rec.status==='selesai');upd()}
+
+/* ================= selesai & kunci ================= */
+async function selesai(rec){const errs=[];if(!rec.gardu.nama)errs.push('Nama gardu kosong');if(!rec.gardu.lokasi)errs.push('Area belum dipilih');if(!rec.petugas)errs.push('Petugas pelaksana kosong');
+ if(rec.form==='beban'){const c=calcBeban(rec.beban);if(!rec.beban.jurusan.some(j=>num(j.ir)||num(j.is)||num(j.it)))errs.push('Belum ada data arus jurusan');if(!(c.kva>0))errs.push('Kapasitas trafo belum diisi');rec.beban.hasil={sum_r:c.sum.r,sum_s:c.sum.s,sum_t:c.sum.t,sum_n:c.sum.n,kva_total:c.kva,netral:rec.beban.netral||'',beban_pct:c.pct==null?null:Math.round(c.pct*100)/100}}
+ else{const fd=FORMS[rec.form];let un=[];rec.temuan=[];for(const g of fd.groups)for(const it of g.items){if(rec.tm&&g.tmNA)continue;const a=rec.answers[it.n];const v=a?ansV(it,a):'';if(!v){un.push(it.n);continue}if(badOf(it,a))rec.temuan.push({no:it.n,grup:g.g,item:it.t,kondisi:v,nilai:a.nilai||'',catatan:a.note||''})}
+  if(un.length)errs.push('Item belum dijawab: #'+un.join(', #'));if(!rec.footer.health)errs.push('Health Index belum dipilih')}
+ const nFoto=(await photosOf(rec.id)).filter(p=>p.ref==='umum').length;if(nFoto<MIN_FOTO_UMUM)errs.push('Foto belum ada — wajib minimal '+MIN_FOTO_UMUM+' foto di bagian bawah form (sekarang '+nFoto+')');
+ if(errs.length)return alert('Belum bisa diselesaikan:\n• '+errs.join('\n• '));
+ if(!rec.gps&&!confirm('GPS belum terambil. Tetap selesaikan tanpa koordinat?'))return;
+ if(!confirm('Selesaikan & kunci inspeksi ini? Setelah dikunci hanya bisa dikoreksi lewat revisi.'))return;
+ const dn=new Date(),p2=n=>String(n).padStart(2,'0');rec.jam=p2(dn.getHours())+':'+p2(dn.getMinutes());
+ if(rec.form==='beban'){const u=rec.beban.ukur;if(!u.pukul)u.pukul=rec.jam;if(!u.waktu)u.waktu=(dn.getHours()>=6&&dn.getHours()<18)?'Siang':'Malam';rec.beban.tgl_laporan=today()}
+ rec.status='selesai';rec.selesaiAt=dn.toISOString();await saveRec(rec);
+ if(rec.form!=='beban'&&!rec.tm&&!bebanOk(rec.gardu.id)&&confirm('Inspeksi tersimpan.\nUkur beban trafo WAJIB diisi untuk gardu non-TM dan belum ada. Isi sekarang?'))return openGardu(tugasOf(rec),'beban')
+ renderHome()}
+
+/* ================= paket zip ================= */
+const CRCT=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+function crc32(u8){let c=0xFFFFFFFF;for(let i=0;i<u8.length;i++)c=CRCT[(c^u8[i])&255]^(c>>>8);return(c^0xFFFFFFFF)>>>0}
+function makeZip(files){const enc=new TextEncoder(),parts=[],cd=[];let off=0;const d=new Date();const dt=(d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1),dd=((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate();
+ for(const f of files){const nm=enc.encode(f.name),crc=crc32(f.data),sz=f.data.length;const lh=new DataView(new ArrayBuffer(30));lh.setUint32(0,0x04034b50,true);lh.setUint16(4,20,true);lh.setUint16(6,0x0800,true);lh.setUint16(10,dt,true);lh.setUint16(12,dd,true);lh.setUint32(14,crc,true);lh.setUint32(18,sz,true);lh.setUint32(22,sz,true);lh.setUint16(26,nm.length,true);parts.push(new Uint8Array(lh.buffer),nm,f.data);
+  const ch=new DataView(new ArrayBuffer(46));ch.setUint32(0,0x02014b50,true);ch.setUint16(4,20,true);ch.setUint16(6,20,true);ch.setUint16(8,0x0800,true);ch.setUint16(12,dt,true);ch.setUint16(14,dd,true);ch.setUint32(16,crc,true);ch.setUint32(20,sz,true);ch.setUint32(24,sz,true);ch.setUint16(28,nm.length,true);ch.setUint32(42,off,true);cd.push(new Uint8Array(ch.buffer),nm);off+=30+nm.length+sz}
+ let cdl=0;for(const c of cd)cdl+=c.length;const e=new DataView(new ArrayBuffer(22));e.setUint32(0,0x06054b50,true);e.setUint16(8,files.length,true);e.setUint16(10,files.length,true);e.setUint32(12,cdl,true);e.setUint32(16,off,true);
+ return new Blob([...parts,...cd,new Uint8Array(e.buffer)],{type:'application/zip'})}
+async function buildPackage(recs){const enc=new TextEncoder(),files=[],man={format:'inspeksi-gardu-paket',versi:1,dibuat:new Date().toISOString(),petugas:S.petugas,items:[]};
+ for(const r of recs){const pm=[];for(const p of await photosOf(r.id)){const u8=new Uint8Array(await p.blob.arrayBuffer());const fn=`foto/${r.id}/${p.pid}.jpg`;files.push({name:fn,data:u8});pm.push({pid:p.pid,ref:p.ref,file:fn,crc:crc32(u8),ts:p.ts})}
+  const jd=enc.encode(JSON.stringify({...r,foto:pm,skema:FORMS[r.form]},null,1));const jn=`data/${r.id}.json`;files.push({name:jn,data:jd});man.items.push({id:r.id,gardu:r.gardu.nama,form:r.form,rev:r.rev,tanggal:r.tanggal,data:jn,crc:crc32(jd),jumlah_foto:pm.length})}
+ files.unshift({name:'manifest.json',data:enc.encode(JSON.stringify(man,null,1))});return makeZip(files)}
+async function kirim(recs){try{
+ // BLOKIR: gardu non-TM tanpa ukur beban trafo yang selesai tidak boleh dikirim
+ const held=recs.filter(r=>r.form!=='beban'&&!r.tm&&!bebanOk(r.gardu.id));
+ if(held.length){const names=held.slice(0,8).map(r=>r.gardu.nama).join(', ')+(held.length>8?', …':'');const rest=recs.filter(r=>!held.includes(r));
+  if(!rest.length){if(confirm('TIDAK BISA DIKIRIM: ukur beban trafo belum diisi untuk '+names+'.\n\nIsi ukur beban sekarang?'))return openGardu(tugasOf(held[0]),'beban');return}
+  if(!confirm('DITAHAN (ukur beban trafo belum diisi): '+names+'.\n\nKirim '+rest.length+' inspeksi lainnya sekarang?'))return;recs=rest}const blob=await buildPackage(recs);const d=new Date();const stamp=today().replace(/-/g,'')+'-'+String(d.getHours()).padStart(2,'0')+String(d.getMinutes()).padStart(2,'0');const fn=`paket-${slug(S.petugas||'petugas')}-${stamp}.zip`;const file=new File([blob],fn,{type:'application/zip'});
+ let shared=false;if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:fn});shared=true}catch(e){if(e.name==='AbortError')return}}
+ if(!shared){const a=h('a',{href:URL.createObjectURL(blob),download:fn});document.body.append(a);a.click();a.remove()}
+ if(confirm('Paket sudah dibuat ('+fn+'). Tandai '+recs.length+' inspeksi sebagai terkirim?')){for(const r of recs){r.sentAt=new Date().toISOString();await saveRec(r)}}renderHome()}catch(e){alert('Gagal membuat paket: '+e.message)}}
+
+/* ================= start ================= */
+openDB().then(()=>{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();return renderHome()}).catch(e=>{app.textContent='Gagal membuka penyimpanan lokal: '+e.message+' (jangan pakai mode private/incognito).'});
+</script>
+</body>
+</html>
