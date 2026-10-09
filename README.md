@@ -1,0 +1,2 @@
+# inspeksi-gardu
+Input gardu 
